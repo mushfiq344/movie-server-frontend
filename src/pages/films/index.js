@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import MovieList from "./movieList";
 
 export default function Index() {
 
@@ -13,7 +13,7 @@ export default function Index() {
   console.log("passign url:", passingUrl);
   return (
 
-    <div>Add Movie List Here</div>
+    <MovieList url={passingUrl}></MovieList>
 
   )
 
