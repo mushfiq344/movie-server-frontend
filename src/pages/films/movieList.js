@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../../components/layout/layout";
 import '../../css/movie-server.css';
-
+import { LogOuT, logOut } from '../auth/session';
 export default function MovieList(props) {
     const [url, setUrl] = useState(props.url);
 
@@ -20,11 +20,21 @@ export default function MovieList(props) {
     // this useEffect will run once
     // similar to componentDidMount()
     useEffect(() => {
-        fetch(url)
+        let bearer = 'Bearer ' + window.localStorage.getItem("token");
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': bearer,
+                'Content-Type': 'application/json'
+            }
+        })
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result);
+                    console.log("resutl:", result);
+                    if (result.status) {
+                        logOut();
+                    }
                     setIsLoaded(true);
 
                     setItems(result.data);
@@ -42,7 +52,7 @@ export default function MovieList(props) {
                 // exceptions from actual bugs in components.
                 (error) => {
                     setIsLoaded(true);
-                    setError(error);
+                    setError("error:", error);
                 }
             )
     }, [url])
@@ -55,60 +65,66 @@ export default function MovieList(props) {
         return (<div>Loading...</div>);
     } else {
 
-        console.log("items", items[0]);
+        console.log("items", items);
         return (
             <div>
-                <ul className="pagination">
+                <div className="pagination row" >
                     {items.map(item => (
-                        <li key={item.id} className={"ml-4"}>
-                            <img width="200px" src={item.photo}></img>
-                            <br></br>
-                            <h3>{item.name}</h3>
-                        </li>
+                        <div key={item.id} className={"ml-4 col-md-3 mt-4"}>
+                            <div className="col-12" style={{ "text-align": "center" }}>
+                                <a href={`/films/${item.slug_name}`}>
+                                    <img width="200px" src={item.photo}></img>
+                                </a>
+                            </div>
+                            <div className="col-12" style={{ "text-align": "center" }}>
+                                <a href={`/films/${item.slug_name}`}><h4>{item.name}</h4></a>
+                            </div>
+                        </div>
                     ))}
-                </ul>
-                <ul className="pagination">
-                    {first_page_url ? (
-                        <li className="page-item"><a className="page-link" onClick={() => { updateUrl(first_page_url) }} href="#">First Page</a></li>
-                    ) : (
-                            <li className="page-item disabled">
-                                <a className="page-link" href="#" tabIndex="-1">First Page</a>
-                            </li>
-                        )}
-                    {prev_page_url ? (
-                        <li className="page-item"><a className="page-link" href="#" onClick={() => { updateUrl(prev_page_url) }}><i className="fa fa-angle-double-left"></i></a></li>
-                    ) : (
+                </div>
+                <div className="row ml-4 mt-4">
+                    <ul className="pagination">
+                        {first_page_url ? (
+                            <li className="page-item"><a className="page-link" onClick={() => { updateUrl(first_page_url) }} href="#">First Page</a></li>
+                        ) : (
+                                <li className="page-item disabled">
+                                    <a className="page-link" href="#" tabIndex="-1">First Page</a>
+                                </li>
+                            )}
+                        {prev_page_url ? (
+                            <li className="page-item"><a className="page-link" href="#" onClick={() => { updateUrl(prev_page_url) }}><i className="fa fa-angle-double-left"></i></a></li>
+                        ) : (
 
-                            <li className="page-item disabled">
-                                <a className="page-link" href="#" tabIndex="-1"><i className="fa fa-angle-double-left"></i></a>
-                            </li>
+                                <li className="page-item disabled">
+                                    <a className="page-link" href="#" tabIndex="-1"><i className="fa fa-angle-double-left"></i></a>
+                                </li>
 
-                        )}
-                    <li className="page-item active">
-                        <a className="page-link" href="#">{current_page} <span className="sr-only">(current)</span></a>
-                    </li>
-                    {next_page_url ? (
-                        <li className="page-item"><a onClick={() => { updateUrl(next_page_url) }} className="page-link" href="#" ><i className="fa fa-angle-double-right"></i></a></li>
-                    ) : (
+                            )}
+                        <li className="page-item active">
+                            <a className="page-link" href="#">{current_page} <span className="sr-only">(current)</span></a>
+                        </li>
+                        {next_page_url ? (
+                            <li className="page-item"><a onClick={() => { updateUrl(next_page_url) }} className="page-link" href="#" ><i className="fa fa-angle-double-right"></i></a></li>
+                        ) : (
 
-                            <li className="page-item disabled">
-                                <a className="page-link" href="#" tabIndex="-1" href="#"><i className="fa fa-angle-double-right"></i></a>
-                            </li>
+                                <li className="page-item disabled">
+                                    <a className="page-link" href="#" tabIndex="-1" href="#"><i className="fa fa-angle-double-right"></i></a>
+                                </li>
 
-                        )}
-                    {last_page_url ? (
-                        <li className="page-item"><a className="page-link" href="#" onClick={() => { updateUrl(last_page_url) }}>Last Page</a></li>
-                    ) : (
-                            <li className="page-item disabled">
-                                <a className="page-link" href="#" tabIndex="-1">Last Page</a>
-                            </li>
-                        )}
-
-
-                </ul>
+                            )}
+                        {last_page_url ? (
+                            <li className="page-item"><a className="page-link" href="#" onClick={() => { updateUrl(last_page_url) }}>Last Page</a></li>
+                        ) : (
+                                <li className="page-item disabled">
+                                    <a className="page-link" href="#" tabIndex="-1">Last Page</a>
+                                </li>
+                            )}
 
 
-            </div>
+                    </ul>
+                </div>
+
+            </div >
         );
 
     }

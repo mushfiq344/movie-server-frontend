@@ -1,8 +1,8 @@
 import React, { useState, Fragment } from "react";
-import logo from "../../assets/images/endless-logo.png";
+import logo from "../../assets/images/xplex.png";
 import UserMenu from "./userMenu";
 import Notification from "./notification";
-import SearchHeader from "./searchHeader";
+
 import { Link } from "react-router-dom";
 import { AlignLeft, Maximize, Bell, MessageCircle, MoreHorizontal } from "react-feather";
 
@@ -80,14 +80,16 @@ const Header = () => {
           <div className="nav-right col p-0">
             <ul className={`nav-menus ${headerbar ? "" : "open"}`}>
               <li>
-                <SearchHeader />
+
               </li>
+              <UserMenu />
             </ul>
             <div
               className="d-lg-none mobile-toggle pull-right"
               onClick={() => setHeaderbar(!headerbar)}
             >
               <MoreHorizontal />
+
             </div>
           </div>
           <script id="empty-template" type="text/x-handlebars-template">

@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import logo from "../../assets/images/endless-logo.png";
+import logo from "../../assets/images/xplex-dark.png";
 import logo_compact from "../../assets/images/logo/compact-logo.png";
 
 import UserPanel from "./userPanel";
@@ -162,8 +162,8 @@ const Sidebar = (props) => {
         <div className="main-header-left d-none d-lg-block">
           <div className="logo-wrapper compactLogo">
             <Link to="/dashboard/default">
-              <img className="blur-up lazyloaded" src={logo_compact} alt="" />
-              <img className="blur-up lazyloaded" src={logo} alt="" />
+              <img className="blur-up lazyloaded" src={logo_compact} alt="" width="200px" />
+              <img className="blur-up lazyloaded" src={logo} alt="" width="200px" />
             </Link>
           </div>
         </div>
@@ -186,9 +186,9 @@ const Sidebar = (props) => {
                     ? "d-none"
                     : ""
                   : hideLeftArrow
-                  ? "d-none"
-                  : ""
-              }`}
+                    ? "d-none"
+                    : ""
+                }`}
               onClick={
                 wrapper === "horizontal_sidebar" && layout === "rtl"
                   ? scrollToLeftRTL
@@ -202,8 +202,8 @@ const Sidebar = (props) => {
                 {menuItem.sidebartitle ? (
                   <div className="sidebar-title">{menuItem.sidebartitle}</div>
                 ) : (
-                  ""
-                )}
+                    ""
+                  )}
                 {menuItem.type === "sub" ? (
                   <a
                     className="sidebar-header"
@@ -215,8 +215,8 @@ const Sidebar = (props) => {
                     <i className="fa fa-angle-right pull-right"></i>
                   </a>
                 ) : (
-                  ""
-                )}
+                    ""
+                  )}
                 {menuItem.type === "link" ? (
                   <Link
                     to={`${process.env.PUBLIC_URL}${menuItem.path}`}
@@ -228,8 +228,8 @@ const Sidebar = (props) => {
                     {menuItem.children ? <i className="fa fa-angle-right pull-right"></i> : ""}
                   </Link>
                 ) : (
-                  ""
-                )}
+                    ""
+                  )}
                 {menuItem.children ? (
                   <ul
                     className={`sidebar-submenu ${menuItem.active ? "menu-open" : ""}`}
@@ -251,8 +251,8 @@ const Sidebar = (props) => {
                             <i className="fa fa-angle-right pull-right"></i>
                           </a>
                         ) : (
-                          ""
-                        )}
+                            ""
+                          )}
 
                         {childrenItem.type === "link" ? (
                           <Link
@@ -264,13 +264,13 @@ const Sidebar = (props) => {
                             {props.t(childrenItem.title)}{" "}
                           </Link>
                         ) : (
-                          ""
-                        )}
+                            ""
+                          )}
                         {childrenItem.children ? (
                           <ul
                             className={`sidebar-submenu ${
                               childrenItem.active ? "menu-open" : "active"
-                            }`}
+                              }`}
                           >
                             {childrenItem.children.map((childrenSubItem, key) => (
                               <li className={childrenSubItem.active ? "active" : ""} key={key}>
@@ -284,20 +284,20 @@ const Sidebar = (props) => {
                                     {props.t(childrenSubItem.title)}
                                   </Link>
                                 ) : (
-                                  ""
-                                )}
+                                    ""
+                                  )}
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          ""
-                        )}
+                            ""
+                          )}
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  ""
-                )}
+                    ""
+                  )}
               </li>
             ))}
             <li
@@ -307,9 +307,9 @@ const Sidebar = (props) => {
                     ? "d-none"
                     : ""
                   : hideRightArrow
-                  ? "d-none"
-                  : ""
-              }`}
+                    ? "d-none"
+                    : ""
+                }`}
               onClick={
                 wrapper === "horizontal_sidebar" && layout === "rtl"
                   ? scrollToRightRTL

@@ -9,6 +9,7 @@ export default function Layout({ children }) {
         <div className="page-body-wrapper">
           <Header />
           <Sidebar />
+
           <div className="page-body">{children}</div>
         </div>
       </div>

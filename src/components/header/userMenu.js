@@ -4,7 +4,7 @@ import { User, Mail, Lock, Settings, LogOut } from "react-feather";
 //import app from "../../data/base";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
-
+import { logOut } from '../../pages/auth/session';
 const UserMenu = ({ history }) => {
   const [profile, setProfile] = useState("");
 
@@ -12,11 +12,6 @@ const UserMenu = ({ history }) => {
     setProfile(localStorage.getItem("profileURL") || man);
   }, []);
 
-  const logOut = () => {
-    localStorage.removeItem("profileURL");
-    //app.auth().signOut();
-    history.push(`${process.env.PUBLIC_URL}/login`);
-  };
 
   return (
     <Fragment>
@@ -33,30 +28,6 @@ const UserMenu = ({ history }) => {
           </div>
         </div>
         <ul className="profile-dropdown onhover-show-div p-20 profile-dropdown-hover">
-          <li>
-            <Link to={`${process.env.PUBLIC_URL}/users/userEdit`}>
-              <User />
-              Edit Profile
-            </Link>
-          </li>
-          <li>
-            <a href="#!">
-              <Mail />
-              Inbox
-            </a>
-          </li>
-          <li>
-            <a href="#!">
-              <Lock />
-              Lock Screen
-            </a>
-          </li>
-          <li>
-            <a href="#!">
-              <Settings />
-              Settings
-            </a>
-          </li>
           <li>
             <a onClick={logOut} href="#!">
               <LogOut /> Log out
