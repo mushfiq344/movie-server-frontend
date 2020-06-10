@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import logo from "../../assets/images/xplex.png";
 import axios from 'axios';
-import { remoteServer } from '../../variables';
+import { remoteServer, localHost } from '../../variables';
 import Cookies from 'universal-cookie';
 
 
@@ -35,10 +35,12 @@ class Login extends React.Component {
                 if (response.data.token) {
                     console.log(response.data)
                     window.localStorage.setItem("token", response.data.token);
+                    window.localStorage.setItem("user_id", response.data.id);
+                    window.localStorage.setItem("name", response.data.name);
                     const cookies = new Cookies();
                     cookies.set('__session', response.data.token);
-                    window.location = 'http://localhost:3000/films';
-                }
+                    window.location = localHost + 'films';
+                }//
             })
             .catch(function (error) {
                 alert(error);

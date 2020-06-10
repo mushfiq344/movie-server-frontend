@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import Layout from "../../components/layout/layout";
-import '../../css/movie-server.css';
-import { LogOuT, logOut } from '../auth/session';
+
+import '../../../css/movie-server.css';
+import { checkResponseStatus } from '../../auth/session';
+import { ShowMovies } from "./showMovies";
+
 export default function MovieList(props) {
     const [url, setUrl] = useState(props.url);
-
+    // hooks for paginated data
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState([]);
 
+    // hooks for paginations
     const [first_page_url, setFirst_page_url] = useState(null);
     const [last_page_url, setLast_page_url] = useState(null);
 
@@ -16,6 +19,7 @@ export default function MovieList(props) {
     const [next_page_url, setNext_page_url] = useState(null);
 
     const [current_page, setCurrent_page] = useState(null);
+
     // Note: the empty deps array [] means
     // this useEffect will run once
     // similar to componentDidMount()
@@ -31,10 +35,8 @@ export default function MovieList(props) {
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log("resutl:", result);
-                    if (result.status) {
-                        logOut();
-                    }
+                    console.log("resutl here:", result);
+                    checkResponseStatus(result);
                     setIsLoaded(true);
 
                     setItems(result.data);
@@ -68,20 +70,7 @@ export default function MovieList(props) {
         console.log("items", items);
         return (
             <div>
-                <div className="pagination row" >
-                    {items.map(item => (
-                        <div key={item.id} className={"ml-4 col-md-3 mt-4"}>
-                            <div className="col-12" style={{ "text-align": "center" }}>
-                                <a href={`/films/${item.slug_name}`}>
-                                    <img width="200px" src={item.photo}></img>
-                                </a>
-                            </div>
-                            <div className="col-12" style={{ "text-align": "center" }}>
-                                <a href={`/films/${item.slug_name}`}><h4>{item.name}</h4></a>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <ShowMovies items={items}></ShowMovies>
                 <div className="row ml-4 mt-4">
                     <ul className="pagination">
                         {first_page_url ? (

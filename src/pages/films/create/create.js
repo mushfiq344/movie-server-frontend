@@ -3,11 +3,14 @@ import React from "react";
 
 import axios from 'axios';
 import { MyDropzone } from "./dropzone";
-import { logOut } from '../auth/session';
+import { logOut } from '../../auth/session';
+import { GenreSelect } from './select';
+import { localHost, RemoteServer, remoteServer } from "../../../variables";
+import { checkResponseStatus } from "../../auth/session";
 class Create extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { name: '', slugName: '', description: '', rating: 1, date: (new Date()).toISOString().substr(0, 10), releaseDate: (new Date()).toISOString().substr(0, 10), files: [] };
+        this.state = { name: '', slugName: '', description: '', rating: 1, date: (new Date()).toISOString().substr(0, 10), releaseDate: (new Date()).toISOString().substr(0, 10), genres: [], files: [] };
 
         this.handleName = this.handleName.bind(this);
         this.handleSlugName = this.handleSlugName.bind(this);
@@ -17,6 +20,8 @@ class Create extends React.Component {
         this.handleReleaseDate = this.handleReleaseDate.bind(this);
 
         this.handleRating = this.handleRating.bind(this);
+
+        this.handleGenres = this.handleGenres.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getImage = this.getImage.bind(this);
@@ -33,6 +38,11 @@ class Create extends React.Component {
 
     handleName(event) {
         this.setState({ name: event.target.value });
+    }
+    async handleGenres(event) {
+
+        await this.setState({ genres: event });
+        console.log("selected Genres:", this.state.genres)
     }
     handleSlugName(event) {
         this.setState({ slugName: event.target.value });
@@ -71,14 +81,12 @@ class Create extends React.Component {
         });
 
         event.preventDefault();
-        axios.post('http://127.0.0.1:8000/api/movieSubmit', data, {
+        axios.post(remoteServer + 'movieSubmit', data, {
             headers: { "Content-Type": "multipart/form-data", ctype: 'multipart/form-data' }
         })
             .then(function (response) {
-                if (response.status) {
-                    logOut();
-                }
-                console.log(response.data);
+                checkResponseStatus(response)
+                alert(response.request.response);
             })
             .catch(function (error) {
                 console.log(error);
@@ -140,6 +148,11 @@ class Create extends React.Component {
                                 <div className="form-group">
                                     <label className="col-form-label">Photo</label>
                                     <MyDropzone files={this.state.files} getImage={this.getImage}></MyDropzone>
+
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-form-label">Genre</label>
+                                    <GenreSelect handleGenres={this.handleGenres}></GenreSelect>
 
                                 </div>
 

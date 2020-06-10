@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import logo from "../../assets/images/xplex.png";
 import axios from 'axios';
-
+import { localHost, remoteServer } from "../../variables";
 import Cookies from 'universal-cookie';
 
 
@@ -49,7 +49,7 @@ class Signup extends React.Component {
         data.append('password_confirmation', this.state.password_confirmation)
 
 
-        axios.post('http://127.0.0.1:8000/api/register', data, {
+        axios.post(remoteServer + 'register', data, {
             headers: { "Content-Type": "multipart/form-data", ctype: 'multipart/form-data' }
         })
             .then(function (response) {
@@ -57,9 +57,12 @@ class Signup extends React.Component {
                 if (response.data.token) {
                     console.log(response.data)
                     window.localStorage.setItem("token", response.data.token);
+                    window.localStorage.setItem("user_id", response.data.user.id);
+                    window.localStorage.setItem("name", response.data.user.name);
                     const cookies = new Cookies();
                     cookies.set('__session', response.data.token);
-                    window.location = 'http://localhost:3000/films';
+
+                    window.location = localHost + 'films';
                 }
             })
             .catch(function (error) {
