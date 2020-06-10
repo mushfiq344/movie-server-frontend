@@ -41,10 +41,6 @@ function Root() {
         <PrivateRoute path="/films">
           <FilmsRoutes></FilmsRoutes>
         </PrivateRoute>
-        <Route path="/theme">
-          <AdminThemeRoutes />
-        </Route>
-
       </Switch>
     </Router>
   );
