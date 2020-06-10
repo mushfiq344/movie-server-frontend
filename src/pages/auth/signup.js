@@ -19,7 +19,7 @@ class Signup extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-
+    // field handles
     handleName(event) {
 
         this.setState({ name: event.target.value });

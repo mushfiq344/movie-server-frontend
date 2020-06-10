@@ -10,8 +10,12 @@ import { checkResponseStatus } from "../../auth/session";
 class Create extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { name: '', slugName: '', description: '', rating: 1, date: (new Date()).toISOString().substr(0, 10), releaseDate: (new Date()).toISOString().substr(0, 10), genres: [], files: [] };
-
+        this.state = {
+            name: '', slugName: '', description: '', rating: 1, date: (new Date()).toISOString().substr(0, 10),
+            releaseDate: (new Date()).toISOString().substr(0, 10), genres: ["Action"], files: [],
+            country: '', ticket: 0, price: 0
+        };
+        // handle create movie form filelds
         this.handleName = this.handleName.bind(this);
         this.handleSlugName = this.handleSlugName.bind(this);
         this.handleDescription = this.handleDescription.bind(this);
@@ -23,10 +27,15 @@ class Create extends React.Component {
 
         this.handleGenres = this.handleGenres.bind(this);
 
+        this.handleCountry = this.handleCountry.bind(this);
+        this.handleTicket = this.handleTicket.bind(this);
+        this.handlePrice = this.handlePrice.bind(this);
+
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getImage = this.getImage.bind(this);
 
     }
+    // images for preview
     async getImage(file) {
         await this.setState({
             files: file.map(file => Object.assign(file, {
@@ -41,8 +50,14 @@ class Create extends React.Component {
     }
     async handleGenres(event) {
 
-        await this.setState({ genres: event });
-        console.log("selected Genres:", this.state.genres)
+        if (event) {
+            let genreNames = [];
+            event.forEach(element => {
+                genreNames.push(element.value);
+            });
+            await this.setState({ genres: genreNames });
+            console.log("genres", this.state.genres);
+        }
     }
     handleSlugName(event) {
         this.setState({ slugName: event.target.value });
@@ -61,18 +76,29 @@ class Create extends React.Component {
     handleRating(event) {
         this.setState({ rating: event.target.value });
     }
+    handleCountry(event) {
+        this.setState({ country: event.target.value });
+    }
+    handleTicket(event) {
+        this.setState({ ticket: event.target.value });
+    }
+    handlePrice(event) {
+        this.setState({ price: event.target.value });
+    }
+
 
 
     handleSubmit(event) {
         const data = new FormData();
         data.append('name', this.state.name)
-        data.append('slug_name', this.state.slugName)
+        data.append('slug_name', this.state.slugName.split(" ").join("-"))
         data.append('description', this.state.description)
-
+        data.append('genres', this.state.genres)
         data.append('date', this.state.date)
         data.append('release', this.state.releaseDate)
-
-
+        data.append('country', this.state.country)
+        data.append('ticket', this.state.ticket)
+        data.append('price', this.state.price)
 
         data.append('rating', this.state.rating)
 
@@ -86,10 +112,12 @@ class Create extends React.Component {
         })
             .then(function (response) {
                 checkResponseStatus(response)
-                alert(response.request.response);
+                console.log("response genre:", response.data);
+                alert(response.data);
+
             })
             .catch(function (error) {
-                console.log(error);
+                alert(error);
             });
 
         this.setState({
@@ -99,6 +127,7 @@ class Create extends React.Component {
             files: [],
             rating: 1,
             date: (new Date()).toISOString().substr(0, 10),
+            genres: [],
             releaseDate: (new Date()).toISOString().substr(0, 10)
 
         })
@@ -120,15 +149,15 @@ class Create extends React.Component {
 
                                 <div className="form-group ">
                                     <label className="col-form-label">Name</label>
-                                    < input className="form-control" type="text" value={this.state.name} onChange={this.handleName} required />
+                                    < input className="form-control" type="text" value={this.state.name} onChange={this.handleName} placeholder="Enter Name" required />
                                 </div>
                                 <div className="form-group ">
                                     <label className="col-form-label">Slug Name</label>
-                                    < input className="form-control" type="text" value={this.state.slugName} onChange={this.handleSlugName} required />
+                                    < input className="form-control" type="text" value={this.state.slugName} onChange={this.handleSlugName} placeholder="Enter Slug Name" required />
                                 </div>
                                 <div className="form-group">
                                     <label className="col-form-label">Description</label>
-                                    < input className="form-control" type="text" value={this.state.description} onChange={this.handleDescription} required />
+                                    < input className="form-control" type="text" value={this.state.description} onChange={this.handleDescription} placeholder="Enter Description" required />
                                 </div>
                                 <div className="form-group">
                                     <label className="col-form-label">Date</label>
@@ -146,6 +175,14 @@ class Create extends React.Component {
                                     <input className="form-control" type="number" step="1" value={this.state.rating} onChange={this.handleRating} min="1" max="5" placeholder="Insert Rating " />
                                 </div>
                                 <div className="form-group">
+                                    <label className="col-form-label">Ticket</label>
+                                    <input className="form-control" type="number" step="1" value={this.state.ticket} onChange={this.handleTicket} min="1" placeholder="Insert Ticket No " />
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-form-label">Price</label>
+                                    <input className="form-control" type="number" step="1" value={this.state.price} onChange={this.handlePrice} min="1" placeholder="Insert Price " />
+                                </div>
+                                <div className="form-group">
                                     <label className="col-form-label">Photo</label>
                                     <MyDropzone files={this.state.files} getImage={this.getImage}></MyDropzone>
 
@@ -154,6 +191,10 @@ class Create extends React.Component {
                                     <label className="col-form-label">Genre</label>
                                     <GenreSelect handleGenres={this.handleGenres}></GenreSelect>
 
+                                </div>
+                                <div className="form-group ">
+                                    <label className="col-form-label">Country</label>
+                                    < input className="form-control" type="text" value={this.state.country} onChange={this.handleCountry} placeholder="Enter Country" required />
                                 </div>
 
                                 <hr className="mt-4 mb-4" />

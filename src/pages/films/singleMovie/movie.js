@@ -3,6 +3,7 @@ import { logOut } from '../../auth/session';
 import { remoteServer, localHost } from "../../../variables";
 import { Comments } from "./comments";
 import { checkResponseStatus } from "../../auth/session";
+import '../../../css/movie-server.css';
 const Movie = (props) => {
     const [slug_name, setSlug_name] = useState(props.slug_name);
     const [data, setData] = useState({});
@@ -44,6 +45,16 @@ const Movie = (props) => {
         }
         return rating;
     };
+    const genreList = () => {
+        if (data.genres) {
+            return data.genres.map(item => (
+                <li key={item.id} className="list-group mr-2">
+                    <span className="badge badge-primary badge-pill">{item.name}</span>
+                </li>
+
+            ))
+        }
+    }
     return (
         <div>
             <div className="row mt-4">
@@ -51,13 +62,24 @@ const Movie = (props) => {
                 <div className="col-2">
                     <img src={data.photo} width="200px"></img>
                 </div>
-                <div className="col-2 float-left">
+                <div className="col-4 float-left">
                     <div className="card">
                         <div className="card-body" height="100%">
                             <h5 className="card-title">{data.name}</h5>
                             <h6 className="card-subtitle mb-2 text-muted">
                                 {ratingStars()}
                             </h6>
+                            <h6 className="card-subtitle mb-2 text-muted">
+                                Genres:
+                            </h6>
+                            <ul className="pagination">
+                                {genreList()}
+                            </ul>
+                            <h6 className="card-subtitle mt-2 mb-2 text-muted">
+                                Story:
+                            </h6>
+
+
                             <p className="card-text">{data.description}</p>
 
                         </div>

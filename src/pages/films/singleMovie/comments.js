@@ -80,11 +80,20 @@ const Comments = (props) => {
                     </li>
 
                 ))}
-
             </ul>
-            <div className="mb-4">
-                <input className="form-control" value={comment} onChange={e => setComment(e.target.value)} type="text" placeholder="Add new comment" />;
-            <button type="submit" className="btn btn-primary mr-1" onClick={() => postComment()}>Submit</button>
+            <div className="mb-4 mt-4">
+                <div className="row">
+                    <div className="col-12">
+                        <input className="form-control" value={comment} onChange={e => setComment(e.target.value)} type="text" placeholder="Add new comment" />
+                    </div>
+
+                    <div className="col-12 d-flex flex-row-reverse">
+                        <button type="submit" className="btn btn-primary mr-1" onClick={() => postComment()}>Submit</button>
+                    </div>
+
+                </div>
+
+
             </div>
 
         </div >

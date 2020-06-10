@@ -49,18 +49,5 @@ export const MENUITEMS = [
       { path: "/films/create", title: "Create Movie", type: "link" }
 
     ],
-  },
-
-
-  // category menu
-  {
-    title: "Catalog",
-    icon: Airplay,
-    type: "sub",
-    active: false,
-    children: [
-      { path: "/admin/catalog/categories", title: "categories", type: "link" },
-
-    ],
-  },
+  }
 ];

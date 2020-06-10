@@ -10,7 +10,7 @@ class Login extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { email: "", password: "" };
+        this.state = { email: "abir@gmail.com", password: "12345678" };
 
 
         this.handleEmail = this.handleEmail.bind(this);
@@ -28,7 +28,7 @@ class Login extends React.Component {
         const data = new FormData();
         data.append('email', this.state.email)
         data.append('password', this.state.password)
-        axios.post(`${remoteServer}/login`, data, {
+        axios.post(`${remoteServer}login`, data, {
             headers: { "Content-Type": "multipart/form-data", ctype: 'multipart/form-data' }
         })
             .then(function (response) {

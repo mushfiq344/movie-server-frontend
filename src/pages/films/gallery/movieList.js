@@ -71,6 +71,7 @@ export default function MovieList(props) {
         return (
             <div>
                 <ShowMovies items={items}></ShowMovies>
+                {/* pagination links */}
                 <div className="row ml-4 mt-4">
                     <ul className="pagination">
                         {first_page_url ? (
