@@ -1,18 +1,18 @@
 import React from "react";
-import { Movie } from "./movie";
+
 import { LayoutContext } from "../../../components/layout/layout"
+import { Create } from "./create";
 
+const CreateMovieIndex = (props) => {
 
-const SingleMovieIndex = (props) => {
-    const { match: { params } } = props;
     return (
 
         <div>
             <LayoutContext.Consumer>
                 {data => {
-                    console.log('data at single movie index', data)
+                    console.log('data at create movie index', data)
                     return (
-                        <Movie slug_name={params.slug_name} data={data}></Movie>
+                        <Create data={data}></Create>
                     )
                 }}
             </LayoutContext.Consumer>
@@ -20,4 +20,4 @@ const SingleMovieIndex = (props) => {
     )
 }
 
-export { SingleMovieIndex }
+export { CreateMovieIndex }

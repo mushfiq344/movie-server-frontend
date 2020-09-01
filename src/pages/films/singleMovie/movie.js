@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { logOut } from '../../auth/session';
-import { remoteServer, localHost } from "../../../variables";
-import { Comments } from "./comments";
-import { checkResponseStatus } from "../../auth/session";
+import { SingleMovieComments } from "./singleMovieComments";
 import '../../../css/movie-server.css';
+import { Redirect } from 'react-router-dom'
+import { SingleMovieData } from './singleMovieData'
 const Movie = (props) => {
-    const [slug_name, setSlug_name] = useState(props.slug_name);
+
     const [data, setData] = useState({});
+    const [token, setToken] = useState(true);
+    const [wrongSlug, SetWrongSlug] = useState(false)
+
     // Note: the empty deps array [] means
     // this useEffect will run once
     // similar to componentDidMount()
     useEffect(() => {
-        let url = remoteServer + 'movie/' + slug_name;
-        let bearer = 'Bearer ' + window.localStorage.getItem("token");
+        let url = props.data.remoteServer + 'movie/' + props.slug_name;
+        let bearer = 'Bearer ' + props.data.token
         fetch(url, {
             method: 'GET',
             headers: {
@@ -23,73 +25,41 @@ const Movie = (props) => {
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log("resutl:", result);
-                    checkResponseStatus(result);
-                    setData(result);
+                    console.log("resutl at movie :", result);
+                    if (result.token !== false) {
+                        setData(result);
+                    } else {
+                        setToken(false)
+                    }
+
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
                 (error) => {
-                    console.log("error here:", error);
-                    window.location = localHost;
+                    // the slug is incorrect
+                    console.log("wrong slug", error);
+
+                    SetWrongSlug(true)
                 }
             )
     }, [])
-    console.log("data", data);
-    let rating = [];
 
-    const ratingStars = () => {
-        for (let i = 0; i < data.rating; i++) {
-            rating.push(<i key={i} className="fa fa-star" aria-hidden="true"></i>);
-        }
-        return rating;
-    };
-    const genreList = () => {
-        if (data.genres) {
-            return data.genres.map(item => (
-                <li key={item.id} className="list-group mr-2">
-                    <span className="badge badge-primary badge-pill">{item.name}</span>
-                </li>
 
-            ))
-        }
-    }
     return (
-        <div>
-            <div className="row mt-4">
-                <div className="col-4"></div>
-                <div className="col-2">
-                    <img src={data.photo} width="200px"></img>
-                </div>
-                <div className="col-4 float-left">
-                    <div className="card">
-                        <div className="card-body" height="100%">
-                            <h5 className="card-title">{data.name}</h5>
-                            <h6 className="card-subtitle mb-2 text-muted">
-                                {ratingStars()}
-                            </h6>
-                            <h6 className="card-subtitle mb-2 text-muted">
-                                Genres:
-                            </h6>
-                            <ul className="pagination">
-                                {genreList()}
-                            </ul>
-                            <h6 className="card-subtitle mt-2 mb-2 text-muted">
-                                Story:
-                            </h6>
-
-
-                            <p className="card-text">{data.description}</p>
-
-                        </div>
+        token === true ?
+            <div>
+                {wrongSlug === false ?
+                    <div>
+                        <SingleMovieData data={data}></SingleMovieData>
+                        <SingleMovieComments slug_name={props.slug_name} data={props.data}></SingleMovieComments>
                     </div>
-                    <div className="col-4"></div>
+                    : <Redirect to="/films"></Redirect>
+                }
 
-                </div>
+
             </div>
-            <Comments slug_name={props.slug_name}></Comments>
-        </div>
+            : <Redirect to="/login"></Redirect>
     )
 }
 

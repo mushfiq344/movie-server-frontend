@@ -6,7 +6,7 @@ import Notification from "./notification";
 import { Link } from "react-router-dom";
 import { AlignLeft, Maximize, Bell, MessageCircle, MoreHorizontal } from "react-feather";
 
-const Header = () => {
+const Header = (props) => {
   const [sidebar, setSidebar] = useState(false);
   const [rightSidebar, setRightSidebar] = useState(true);
   const [headerbar, setHeaderbar] = useState(true);
@@ -82,7 +82,7 @@ const Header = () => {
               <li>
 
               </li>
-              <UserMenu />
+              <UserMenu signOff={props.signOff} />
             </ul>
             <div
               className="d-lg-none mobile-toggle pull-right"

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import man from "../../assets/images/dashboard/user.png";
 import { Link } from "react-router-dom";
 import { Edit } from "react-feather";
-
+import { LayoutContext } from "../layout/layout"
 const UserPanel = () => {
   const url = "";
   return (

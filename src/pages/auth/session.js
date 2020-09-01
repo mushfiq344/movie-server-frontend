@@ -1,6 +1,8 @@
+import React, { Component } from 'react';
 import Cookies from 'js-cookie'
 // get the session for authorization and authentication
 import { remoteServer, localHost } from '../../variables';
+import { Redirect } from 'react-router';
 export const getSession = () => {
     const jwt = Cookies.get('__session')
     let session
@@ -20,18 +22,13 @@ export const getSession = () => {
 
 // check status of the response
 export const checkResponseStatus = (response) => {
-    if (response.status == "Token is Invalid" || response.status == "Token is Expired" || response.status == "Authorization Token not found") {
-        logOut();
+
+    // these expressions are saved in jtwmiddleware.php
+    if (response.token === false) {
+
+        return false;
+    } else {
+        return true;
     }
 
-}
-
-// logout and delete all local saved values
-export const logOut = () => {
-    console.log("removing session")
-    Cookies.remove('__session')
-    window.localStorage.removeItem("token");
-    window.localStorage.removeItem("user_id");
-    window.localStorage.removeItem("name");
-    window.location = localHost;
 }

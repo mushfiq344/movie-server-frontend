@@ -1,19 +1,19 @@
 import React from "react";
-
+import { Redirect } from "react-router";
 
 import axios from 'axios';
 import { MyDropzone } from "./dropzone";
-import { logOut } from '../../auth/session';
+
 import { GenreSelect } from './select';
-import { localHost, RemoteServer, remoteServer } from "../../../variables";
-import { checkResponseStatus } from "../../auth/session";
+
+
 class Create extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '', slugName: '', description: '', rating: 1, date: (new Date()).toISOString().substr(0, 10),
-            releaseDate: (new Date()).toISOString().substr(0, 10), genres: ["Action"], files: [],
-            country: '', ticket: 0, price: 0
+            name: 'asdasd', slugName: '', description: 'asdasd', rating: 1, date: (new Date()).toISOString().substr(0, 10),
+            releaseDate: (new Date()).toISOString().substr(0, 10), genres: [], files: [], remoteServer: this.props.data.remoteServer,
+            country: 'asdasd', ticket: 1, price: 1, token: true
         };
         // handle create movie form filelds
         this.handleName = this.handleName.bind(this);
@@ -48,16 +48,20 @@ class Create extends React.Component {
     handleName(event) {
         this.setState({ name: event.target.value });
     }
-    async handleGenres(event) {
+    handleGenres(event) {
 
-        if (event) {
-            let genreNames = [];
-            event.forEach(element => {
-                genreNames.push(element.value);
-            });
-            await this.setState({ genres: genreNames });
-            console.log("genres", this.state.genres);
-        }
+        // console.log("event genre", event)
+        // if (event) {
+        //     let genreNames = [];
+        //     event.forEach(element => {
+        //         genreNames.push(element.value);
+        //     });
+        //     this.setState({ genres: genreNames });
+
+        // } else {
+        //     this.setState({ genres: [] });
+        // }
+        this.setState({ genres: event })
     }
     handleSlugName(event) {
         this.setState({ slugName: event.target.value });
@@ -89,11 +93,17 @@ class Create extends React.Component {
 
 
     handleSubmit(event) {
+
+        event.preventDefault()
         const data = new FormData();
         data.append('name', this.state.name)
         data.append('slug_name', this.state.slugName.split(" ").join("-"))
         data.append('description', this.state.description)
-        data.append('genres', this.state.genres)
+        let genreList = [];
+        this.state.genres.forEach(element => {
+            genreList.push(element.value);
+        });
+        data.append('genres', genreList)
         data.append('date', this.state.date)
         data.append('release', this.state.releaseDate)
         data.append('country', this.state.country)
@@ -105,133 +115,124 @@ class Create extends React.Component {
         this.state.files.forEach(file => {
             data.append('myimages[]', file, file.name);
         });
-
-        event.preventDefault();
-        axios.post(remoteServer + 'movieSubmit', data, {
-            headers: { "Content-Type": "multipart/form-data", ctype: 'multipart/form-data' }
+        var self = this;
+        let bearer = 'Bearer ' + this.props.data.token;
+        axios.post(this.state.remoteServer + 'movieSubmit', data, {
+            headers: {
+                "Content-Type": "multipart/form-data", ctype: 'multipart/form-data',
+                'Authorization': bearer
+            }
         })
             .then(function (response) {
-                checkResponseStatus(response)
-                console.log("response genre:", response.data);
-                alert(response.data);
+                console.log('create', response.data.token)
+                if (response.data.token === false) {
+                    self.setState({ token: false })
+                } else {
+                    self.setState({
+                        name: 'asdasd',
+                        slugName: '',
+                        description: 'asdasd',
+                        files: [],
+                        rating: 1,
+                        ticket: 1,
+                        price: 1,
+                        date: (new Date()).toISOString().substr(0, 10),
+                        genres: [],
+                        releaseDate: (new Date()).toISOString().substr(0, 10),
+                        country: 'asdasd'
+
+                    })
+                }
+                alert(response.data)
+
 
             })
             .catch(function (error) {
-                alert(error);
+                console.log('error', error)
             });
 
-        this.setState({
-            name: '',
-            slugName: '',
-            description: '',
-            files: [],
-            rating: 1,
-            date: (new Date()).toISOString().substr(0, 10),
-            genres: [],
-            releaseDate: (new Date()).toISOString().substr(0, 10)
 
-        })
 
 
     }
 
     render() {
+        console.log("token", this.state.token)
         return (
-            <div className="row">
-                <div className="col-12">
-                    <form className="theme-form mega-form" onSubmit={this.handleSubmit} ctype='multipart/form-data'>
-                        <div className="card">
-                            <div className="card-header">
-                                <h5>Create Movie</h5>
+            this.state.token === true ?
+                <div className="row">
+                    <div className="col-12">
+                        <form className="theme-form mega-form" onSubmit={(event) => this.handleSubmit(event)} ctype='multipart/form-data'>
+                            <div className="card">
+                                <div className="card-header">
+                                    <h5>Create Movie</h5>
+                                </div>
+                                <div className="card-body">
+
+
+                                    <div className="form-group ">
+                                        <label className="col-form-label">Name</label>
+                                        < input className="form-control" type="text" value={this.state.name} onChange={this.handleName} placeholder="Enter Name" required />
+                                    </div>
+                                    <div className="form-group ">
+                                        <label className="col-form-label">Slug Name</label>
+                                        < input className="form-control" type="text" value={this.state.slugName} onChange={this.handleSlugName} placeholder="Enter Slug Name" required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-form-label">Description</label>
+                                        < input className="form-control" type="text" value={this.state.description} onChange={this.handleDescription} placeholder="Enter Description" required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-form-label">Date</label>
+                                        <input className="form-control" type="date" placeholder="Enter date" onChange={this.handleDate} value={this.state.date} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-form-label">Release Date</label>
+                                        <input className="form-control" type="date" placeholder="Enter relase date" onChange={this.handleReleaseDate} value={this.state.releaseDate} />
+                                    </div>
+
+                                    <hr className="mt-4 mb-4" />
+
+                                    <div className="form-group">
+                                        <label className="col-form-label">Rating</label>
+                                        <input className="form-control" type="number" step="1" value={this.state.rating} onChange={this.handleRating} min="1" max="5" placeholder="Insert Rating " />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-form-label">Ticket</label>
+                                        <input className="form-control" type="number" step="1" value={this.state.ticket} onChange={this.handleTicket} min="1" placeholder="Insert Ticket No " />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-form-label">Price</label>
+                                        <input className="form-control" type="number" step="1" value={this.state.price} onChange={this.handlePrice} min="1" placeholder="Insert Price " />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-form-label">Photo</label>
+                                        <MyDropzone files={this.state.files} getImage={this.getImage}></MyDropzone>
+
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-form-label">Genre</label>
+                                        <GenreSelect handleGenres={this.handleGenres} genres={this.state.genres} data={this.props.data}></GenreSelect>
+
+                                    </div>
+                                    <div className="form-group ">
+                                        <label className="col-form-label">Country</label>
+                                        < input className="form-control" type="text" value={this.state.country} onChange={this.handleCountry} placeholder="Enter Country" required />
+                                    </div>
+
+                                    <hr className="mt-4 mb-4" />
+                                </div>
+                                <div className="card-footer">
+                                    <button type="submit" className="btn btn-primary mr-1">Submit</button>
+
+                                </div>
                             </div>
-                            <div className="card-body">
+                        </form>
+                    </div>
 
+                </div > :
+                <Redirect to="/login"></Redirect>
 
-                                <div className="form-group ">
-                                    <label className="col-form-label">Name</label>
-                                    < input className="form-control" type="text" value={this.state.name} onChange={this.handleName} placeholder="Enter Name" required />
-                                </div>
-                                <div className="form-group ">
-                                    <label className="col-form-label">Slug Name</label>
-                                    < input className="form-control" type="text" value={this.state.slugName} onChange={this.handleSlugName} placeholder="Enter Slug Name" required />
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-form-label">Description</label>
-                                    < input className="form-control" type="text" value={this.state.description} onChange={this.handleDescription} placeholder="Enter Description" required />
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-form-label">Date</label>
-                                    <input className="form-control" type="date" placeholder="Enter date" onChange={this.handleDate} value={this.state.date} />
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-form-label">Release Date</label>
-                                    <input className="form-control" type="date" placeholder="Enter relase date" onChange={this.handleReleaseDate} value={this.state.releaseDate} />
-                                </div>
-
-                                <hr className="mt-4 mb-4" />
-
-                                <div className="form-group">
-                                    <label className="col-form-label">Rating</label>
-                                    <input className="form-control" type="number" step="1" value={this.state.rating} onChange={this.handleRating} min="1" max="5" placeholder="Insert Rating " />
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-form-label">Ticket</label>
-                                    <input className="form-control" type="number" step="1" value={this.state.ticket} onChange={this.handleTicket} min="1" placeholder="Insert Ticket No " />
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-form-label">Price</label>
-                                    <input className="form-control" type="number" step="1" value={this.state.price} onChange={this.handlePrice} min="1" placeholder="Insert Price " />
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-form-label">Photo</label>
-                                    <MyDropzone files={this.state.files} getImage={this.getImage}></MyDropzone>
-
-                                </div>
-                                <div className="form-group">
-                                    <label className="col-form-label">Genre</label>
-                                    <GenreSelect handleGenres={this.handleGenres}></GenreSelect>
-
-                                </div>
-                                <div className="form-group ">
-                                    <label className="col-form-label">Country</label>
-                                    < input className="form-control" type="text" value={this.state.country} onChange={this.handleCountry} placeholder="Enter Country" required />
-                                </div>
-
-                                <hr className="mt-4 mb-4" />
-                            </div>
-                            <div className="card-footer">
-                                <button type="submit" className="btn btn-primary mr-1">Submit</button>
-
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-            </div >
-            // <form onSubmit={this.handleSubmit} className="form-inline theme-form mt-3 billing-form">
-            //     <div className="container">
-            //         <div className="row">
-
-            //             <div className="col-12">
-            //                 <label className="form-control"> Name: </label>
-            //                 < input className="form-control" type="text" value={this.state.name} onChange={this.handleName} />
-
-            //             </div>
-
-            //             <div className="col-12">
-            //                 <label className="form-control"> description: </label>
-            //                 < input className="form-control" type="text" value={this.state.description} onChange={this.handleDescription} />
-
-            //             </div>
-            //             <div className="col-12">
-
-            //                 <input className="form-control" type="submit" value="Submit" />
-
-            //             </div>
-            //         </div>
-
-            //     </div>
-            // </form >
 
         );
     }

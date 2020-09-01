@@ -1,11 +1,8 @@
 import React, { Fragment } from 'react';
 import logo from "../../assets/images/xplex.png";
 import axios from 'axios';
-import { localHost, remoteServer } from "../../variables";
-import Cookies from 'universal-cookie';
-
-
-
+import { remoteServer } from "../../variables";
+import { Link } from 'react-router-dom'
 class Signup extends React.Component {
 
     constructor(props) {
@@ -17,6 +14,8 @@ class Signup extends React.Component {
         this.handlePassword = this.handlePassword.bind(this);
         this.handlePassword_confirmation = this.handlePassword_confirmation.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+
     }
 
     // field handles
@@ -39,8 +38,9 @@ class Signup extends React.Component {
 
 
 
-    handleSubmit(event) {
+    handleSubmit(event, props) {
         event.preventDefault();
+
         console.log(this.state.name);
         const data = new FormData();
         data.append('name', this.state.name)
@@ -53,16 +53,12 @@ class Signup extends React.Component {
             headers: { "Content-Type": "multipart/form-data", ctype: 'multipart/form-data' }
         })
             .then(function (response) {
-
+                console.log("at signup", response)
                 if (response.data.token) {
                     console.log(response.data)
                     window.localStorage.setItem("token", response.data.token);
-                    window.localStorage.setItem("user_id", response.data.user.id);
-                    window.localStorage.setItem("name", response.data.user.name);
-                    const cookies = new Cookies();
-                    cookies.set('__session', response.data.token);
+                    props.loginDone()
 
-                    window.location = localHost + 'films';
                 }
             })
             .catch(function (error) {
@@ -96,7 +92,7 @@ class Signup extends React.Component {
                                             <div className="card mt-4 p-4">
                                                 <h4 className="text-center">NEW USER</h4>
                                                 <h6 className="text-center">Enter your Name , Email and Password For Signup</h6>
-                                                <form onSubmit={this.handleSubmit} className="theme-form">
+                                                <form onSubmit={(event) => this.handleSubmit(event, this.props)} className="theme-form">
                                                     <div className="form-row">
                                                         <div className="col-md-12">
                                                             <div className="form-group">
@@ -123,7 +119,7 @@ class Signup extends React.Component {
                                                             <button className="btn btn-primary" type="submit">Sign Up</button>
                                                         </div>
                                                         <div className="col-sm-8">
-                                                            <div className="text-left mt-2 m-l-20">Are you already user?  <a className="btn-link text-capitalize" href="/login">Login</a></div>
+                                                            <div className="text-left mt-2 m-l-20">Are you already user?  <Link to={`login`}>Login</Link></div>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -143,4 +139,4 @@ class Signup extends React.Component {
 
 
 
-export default Signup;
+export { Signup };

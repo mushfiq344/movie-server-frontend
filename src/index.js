@@ -16,8 +16,8 @@ import {
 import FilmsRoutes from "./pages/films/routes";
 //importing authentication pages
 import Signup from "./pages/auth/signup";
-import Login from "./pages/auth/login";
-
+import { LoginIndex } from "./pages/auth/loginIndex";
+import { SignupIndex } from "./pages/auth/signupIndex";
 function Root() {
 
   return (
@@ -29,18 +29,16 @@ function Root() {
         </Route>
 
         <Route path="/signup">
-          {getSession() ? <Redirect to={"/films"} />
-            : <Signup></Signup>
-          }
+          <SignupIndex></SignupIndex>
         </Route>
         <Route path="/login">
-          {getSession() ? <Redirect to={"/films"} />
-            : <Login></Login>
-          }
+
+          <LoginIndex></LoginIndex>
+
         </Route>
-        <PrivateRoute path="/films">
+        <Route path="/films">
           <FilmsRoutes></FilmsRoutes>
-        </PrivateRoute>
+        </Route>
       </Switch>
     </Router>
   );

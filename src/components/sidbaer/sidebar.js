@@ -44,14 +44,16 @@ const Sidebar = (props) => {
 
     setTimeout(() => {
       const elmnt = document.getElementById("myDIV");
-      const menuWidth = elmnt.offsetWidth;
-      // setMenuWidth(menuWidth)
-      if (menuWidth > window.innerWidth) {
-        setHideRightArrow(false);
-        setHideLeftArrowRTL(false);
-      } else {
-        setHideRightArrow(true);
-        setHideLeftArrowRTL(true);
+      if (elmnt !== null) {
+        const menuWidth = elmnt.offsetWidth;
+        // setMenuWidth(menuWidth)
+        if (menuWidth > window.innerWidth) {
+          setHideRightArrow(false);
+          setHideLeftArrowRTL(false);
+        } else {
+          setHideRightArrow(true);
+          setHideLeftArrowRTL(true);
+        }
       }
     }, 500);
 

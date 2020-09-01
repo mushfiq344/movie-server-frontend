@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MovieList from "./movieList";
-import { localHost, remoteServer } from "../../../variables";
+import { remoteServer } from "../../../variables";
+import { LayoutContext } from "../../../components/layout/layout"
 export default function Index() {
 
   const [url, setUrl] = useState(remoteServer + "movies");
-  const changeUrl = async (newUrl) => {
-    console.log("new url", newUrl);
-    await setUrl(newUrl);
-  }
-  let passingUrl;
-  passingUrl = url;
-  console.log("passign url:", passingUrl);
-  return (
 
-    <MovieList url={passingUrl}></MovieList>
+  return (
+    <LayoutContext.Consumer>
+      {data => {
+        return (
+          <MovieList data={data}></MovieList>
+        )
+      }}
+    </LayoutContext.Consumer>
 
   )
 
